@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Отзывы о товарах</title>
+  <style>
+    .reviews-container {
+      margin-bottom: 20px;
+    }
+
+    .review {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .error-message {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Место для отзывов и форм добавления отзывов -->
+<div id="app"></div>
+
+<script>
+
+  const initialData = [
+    {
+      product: "Apple iPhone 13",
+      reviews: [
+        {
+          id: 1,
+          text: "Отличный телефон! Батарея держится долго.",
+        },
+        {
+          id: 2,
+          text: "Камера супер, фото выглядят просто потрясающе.",
+        },
+      ],
+    },
+    {
+      product: "Samsung Galaxy Z Fold 3",
+      reviews: [
+        {
+          id: 3,
+          text: "Интересный дизайн, но дорогой.",
+        },
+      ],
+    },
+    {
+      product: "Sony PlayStation 5",
+      reviews: [
+        {
+          id: 4,
+          text: "Люблю играть на PS5, графика на высоте.",
+        },
+      ],
+    },
+  ];
+
+  function createElement(tag, attributes = {}, textContent = null) {
+    const element = document.createElement(tag);
+    for (const key in attributes) {
+      element.setAttribute(key, attributes[key]);
+    }
+    if (textContent !== null) {
+      element.textContent = textContent;
+    }
+    return element;
+  }
+
+  function createReviewItem(review) {
+    const reviewItem = createElement('li', { class: 'review' }, review.text);
+    return reviewItem;
+  }
+
+  function createAddReviewForm() {
+    const addReviewForm = createElement('form');
+
+    const reviewInput = createElement('textarea', {
+      placeholder: 'Введите отзыв (от 50 до 500 символов)',
+    });
+
+    const errorMessage = createElement('p', { class: 'error-message' });
+
+    const submitButton = createElement('button', {}, 'Добавить отзыв');
+
+    addReviewForm.appendChild(reviewInput);
+    addReviewForm.appendChild(errorMessage);
+    addReviewForm.appendChild(submitButton);
+
+    return addReviewForm;
+  }
+
+  function createReviewsContainer(item) {
+    const reviewsContainer = createElement('div', { class: 'reviews-container' });
+
+    const productTitle = createElement('h2', {}, item.product);
+
+    const reviewsList = createElement('ul');
+    item.reviews.forEach(review => {
+      const reviewItem = createReviewItem(review);
+      reviewsList.appendChild(reviewItem);
+    });
+
+    const addReviewForm = createAddReviewForm();
+
+    reviewsContainer.appendChild(productTitle);
+    reviewsContainer.appendChild(reviewsList);
+    reviewsContainer.appendChild(addReviewForm);
+
+    return reviewsContainer;
+  }
+
+  function renderReviews(data) {
+    const appContainer = document.getElementById('app');
+
+    if (!appContainer) {
+      console.error('App container not found');
+      return;
+    }
+
+    appContainer.innerHTML = '';
+
+    data.forEach(item => {
+      const reviewsContainer = createReviewsContainer(item);
+
+      const addReviewForm = reviewsContainer.querySelector('form');
+      const reviewInput = reviewsContainer.querySelector('textarea');
+      const errorMessage = reviewsContainer.querySelector('.error-message');
+
+      // Обработчик отправки формы
+      addReviewForm.addEventListener('submit', event => {
+        event.preventDefault();
+
+        const newReviewText = reviewInput.value.trim();
+
+        // Проверка длины отзыва
+        if (newReviewText.length < 50 || newReviewText.length > 500) {
+          errorMessage.textContent = 'Отзыв должен быть от 50 до 500 символов';
+        } else {
+          // Очищаем поле ввода и сообщение об ошибке
+          reviewInput.value = '';
+          errorMessage.textContent = '';
+
+          // Генерируем уникальный ID для нового отзыва
+          const newReviewId = generateUUID();
+
+          // Добавляем новый отзыв к текущим отзывам
+          item.reviews.push({ id: newReviewId, text: newReviewText });
+
+          // Отображаем обновленные отзывы
+          renderReviews(data);
+        }
+      });
+
+      appContainer.appendChild(reviewsContainer);
+    });
+  }
+
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+          v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  // Инициализация отображения отзывов
+  renderReviews(initialData);
+</script>
+
+</body>
+</html>
