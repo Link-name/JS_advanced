@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="task_1.js" defer></script>
+    <script src="task_.js" defer></script>
+    <script src="task2.js" defer></script>
+
+    
+    <link rel="stylesheet" href="task.css">
+    <title>Document</title>
+    
+</head>
+<body>
+    <div class="container">
+      <h2>Добавление отзыва о продукте</h2>
+      <form id="reviewForm">
+        <label for="productName">Название продукта:</label>
+        <input type="text" id="productName" name="productName" required>
+  
+        <label for="reviewText">Текст отзыва:</label>
+        <textarea id="reviewText" name="reviewText" rows="4" required></textarea>
+  
+        <button type="button" onclick="addReview()">Добавить отзыв</button>
+      </form>
+      <p id="error" class="error"></p>
+    </div>
+    <div class="container">
+        <h2>Отзывы о продуктах</h2>
+        <div id="reviewsList"></div>
+        <a href="index.html">Вернуться</a>
+      </div>
+      <div id="productsList"></div>
+  </body>
+</html>
